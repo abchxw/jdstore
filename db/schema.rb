@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170504231606) do
+ActiveRecord::Schema.define(version: 20170514143243) do
 
   create_table "cart_items", force: :cascade do |t|
     t.integer  "cart_id"
@@ -27,6 +27,12 @@ ActiveRecord::Schema.define(version: 20170504231606) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "category_products", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ckeditor_assets", force: :cascade do |t|
@@ -55,6 +61,13 @@ ActiveRecord::Schema.define(version: 20170504231606) do
     t.string   "payment_method"
     t.string   "aasm_state",       default: "order_placed"
     t.index ["aasm_state"], name: "index_orders_on_aasm_state"
+  end
+
+  create_table "photos", force: :cascade do |t|
+    t.integer  "product_id"
+    t.string   "avatar"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|
@@ -112,6 +125,17 @@ ActiveRecord::Schema.define(version: 20170504231606) do
     t.boolean  "is_admin",               default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string   "item_type",                         null: false
+    t.integer  "item_id",                           null: false
+    t.string   "event",                             null: false
+    t.string   "whodunnit"
+    t.text     "object",         limit: 1073741823
+    t.datetime "created_at"
+    t.text     "object_changes", limit: 1073741823
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
 end

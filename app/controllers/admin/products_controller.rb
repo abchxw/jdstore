@@ -9,6 +9,7 @@ class Admin::ProductsController < ApplicationController
 
    def new
       @product = Product.new
+      @photo = @product.photos.build #for multi-pics
       @categories = Category.all.map { |c| [c.name, c.id] }
    end
 
@@ -20,7 +21,19 @@ class Admin::ProductsController < ApplicationController
    def update
      @product = Product.find(params[:id])
      @product.category_id = params[:category_id]
-     if @product.update(product_params)
+
+     if params[:photos] != nil
+      @product.photos.destroy_all #清除原有的图片
+
+      params[:photos]['avatar'].each do |a|
+        @photo = @product.photos.create(:avatar => a)
+      end
+
+      @product.update(product_params)
+      redirect_to admin_products_path
+
+    elsif @product.update(product_params)
+
        redirect_to admin_products_path
      else
        render :edit
@@ -31,6 +44,11 @@ class Admin::ProductsController < ApplicationController
       @product = Product.new(product_params)
       @product.category_id = params[:category_id]
       if @product.save
+         if params[:photos] != nil
+            params[:photos]['avatar'].each do |a|
+            @photo = @product.photos.create(:avatar => a)
+            end
+         end
         redirect_to admin_products_path
       else
         render :new
