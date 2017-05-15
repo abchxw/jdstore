@@ -17,3 +17,4 @@
 //= require bootstrap/dropdown
 //= require_tree
 //= require ckeditor/init
+//= require bootstrap

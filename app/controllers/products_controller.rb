@@ -16,6 +16,7 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
+    @photos = @product.photos.all
   end
 
   def add_to_cart
@@ -28,6 +29,26 @@ class ProductsController < ApplicationController
     end
      redirect_to :back
    end
+
+   def update
+    @product = Product.find(params[:id])
+
+    if params[:photos] != nil
+      @product.photos.destroy_all #need to destroy old pics first
+
+      params[:photos]['avatar'].each do |a|
+        @picture = @product.photos.create(:avatar => a)
+      end
+
+      @product.update(product_params)
+      redirect_to admin_products_path
+
+    elsif @product.update(product_params)
+      redirect_to admin_products_path
+    else
+      render :edit
+    end
+  end
 
 
 end
